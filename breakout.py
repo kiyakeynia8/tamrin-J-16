@@ -10,10 +10,9 @@ class Game(arcade.Window):
         self.squares = []
         self.sqr_x = 15
         self.sqr_y = 500
-        self.random = (random.randint(0,10))
         self.a = 0
         
-        for i in range(self.random):
+        for i in range(5):
             self.sqr_y -= 55
             for i in range(17):
                 self.square = Square(self.sqr_x, self.sqr_y, arcade.color.RED)
@@ -24,11 +23,8 @@ class Game(arcade.Window):
         arcade.start_render()
         self.me.draw()
         self.ball.draw()
-        for i in range(self.random):
-            for j in range(17):
-                self.squares[self.a].draw()
-                self.a+=1
-            
+        for square in self.squares:
+            square.draw()
         arcade.finish_render()
 
     def on_mouse_motion(self, x, y, dx, dy):
