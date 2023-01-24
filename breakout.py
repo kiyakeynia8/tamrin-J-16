@@ -9,12 +9,13 @@ class Game(arcade.Window):
         self.ball = Ball(self.width//2,30)
         self.squares = []
         self.sqr_x = 15
-        self.sqr_y = 500
+        self.sqr_y = 600
         self.a = 0
         
         for i in range(5):
             self.sqr_y -= 55
-            for i in range(17):
+            self.sqr_x = 15
+            for j in range(17):
                 self.square = Square(self.sqr_x, self.sqr_y, arcade.color.RED)
                 self.squares.append(self.square)
                 self.sqr_x += 30
@@ -23,6 +24,8 @@ class Game(arcade.Window):
         arcade.start_render()
         self.me.draw()
         self.ball.draw()
+        arcade.draw_text("Score:", 350, 570, font_size=20)
+        arcade.draw_text(self.me.score, 430, 570,font_size=20)
         for square in self.squares:
             square.draw()
         arcade.finish_render()
@@ -36,6 +39,22 @@ class Game(arcade.Window):
   
         if self.ball.center_x < 15 or self.ball.center_x > self.width - 15:
             self.ball.change_x *= -1
+
+        if self.ball.center_y > 600:
+            self.ball.change_y *= -1
+
+        if self.ball.center_y < 0:
+            arcade.draw_rectangle_filled(100, 100, 500, 600, arcade.color.BLACK)            
+
+        for sqr in self.squares:
+            if arcade.check_for_collision(self.ball, sqr):
+                self.squares.remove(sqr)
+                self.ball.change_y *= -1
+                self.ball.speed += 0.25
+                self.me.score += 1
+
+        if arcade.check_for_collision(self.ball, self.me):
+                self.ball.change_y *= -1
 
 class Rocket(arcade.Sprite):
     def __init__(self,x,y,c,n):
@@ -58,12 +77,12 @@ class Ball(arcade.Sprite):
     def __init__(self,x,y):
         super().__init__()
         self.center_x = x
-        self.center_y = y
+        self.center_y = y+20
         self.color = arcade.color.WHITE
         self.radius = 10
         self.change_x = random.choice([1,-1])
         self.change_y = 1
-        self.speed = 1
+        self.speed = 2
         self.width = self.radius * 2
         self.height = self.radius * 2
     
