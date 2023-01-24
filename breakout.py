@@ -4,19 +4,20 @@ import arcade
 class Game(arcade.Window):
     def __init__(self):
         super().__init__(width=500,height=600,title= "breakout")
-        arcade.set_background_color(arcade.color.DARK_BLUE)
-        self.me = Rocket(self.width//2,30,arcade.color.APPLE_GREEN,"kia")
+        arcade.set_background_color(arcade.color.ORANGE)
+        self.me = Rocket(self.width//2,30,arcade.color.PEACH,"kia")
         self.ball = Ball(self.width//2,30)
         self.squares = []
+        self.colors = [arcade.color.BLACK,arcade.color.BLUE,arcade.color.RED,arcade.color.GREEN,arcade.color.YELLOW]
         self.sqr_x = 15
         self.sqr_y = 600
         self.a = 0
         
-        for i in range(5):
+        for i in range(3):
             self.sqr_y -= 55
             self.sqr_x = 15
             for j in range(17):
-                self.square = Square(self.sqr_x, self.sqr_y, arcade.color.RED)
+                self.square = Square(self.sqr_x, self.sqr_y, random.choice(self.colors))
                 self.squares.append(self.square)
                 self.sqr_x += 30
 
@@ -28,6 +29,12 @@ class Game(arcade.Window):
         arcade.draw_text(self.me.score, 430, 570,font_size=20)
         for square in self.squares:
             square.draw()
+        if self.ball.center_y < 0:
+            arcade.draw_rectangle_filled(250, 300, 500, 600, arcade.color.BLACK)
+            arcade.draw_text("Game over", 125, 250,font_size=40)
+        if self.me.score == 51:
+            arcade.draw_rectangle_filled(250, 300, 500, 600, arcade.color.BLACK)
+            arcade.draw_text("You win!!", 125, 250,font_size=40)
         arcade.finish_render()
 
     def on_mouse_motion(self, x, y, dx, dy):
@@ -41,10 +48,7 @@ class Game(arcade.Window):
             self.ball.change_x *= -1
 
         if self.ball.center_y > 600:
-            self.ball.change_y *= -1
-
-        if self.ball.center_y < 0:
-            arcade.draw_rectangle_filled(100, 100, 500, 600, arcade.color.BLACK)            
+            self.ball.change_y *= -1            
 
         for sqr in self.squares:
             if arcade.check_for_collision(self.ball, sqr):
